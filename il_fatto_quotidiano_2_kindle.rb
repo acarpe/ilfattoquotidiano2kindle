@@ -35,7 +35,7 @@ class IlFattoQuotidiano2Kindle
     end
   end
 
-  def setting_up_smtp config
+  def self.setting_up_smtp config
     ActionMailer::Base.delivery_method = :smtp
     ActionMailer::Base.smtp_settings = {
         :enable_starttls_auto => true,
@@ -43,7 +43,7 @@ class IlFattoQuotidiano2Kindle
         :port => "587",
         :domain => "gmail.com",
         :authentication => :plain,
-        :user_name => config['smtp_user_name']
+        :user_name => config['smtp_user_name'],
         :password => config['smtp_password']
       }
   end
