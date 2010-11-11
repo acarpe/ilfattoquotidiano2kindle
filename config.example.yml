@@ -1,0 +1,8 @@
+site_hostname:  "http://www.ilfattoquotidiano.it"
+site_login_url: "http://www.ilfattoquotidiano.it/login/"
+site_user_name: "YOUR_SUBSCRIPTION_USER_NAME"
+site_password:  "YOUR_SUBSCRIPTION_PASSWORD"
+smtp_user_name: "YOUR_GMAIL_USER_NAME"
+smtp_password:  "YOUR_GMAIL PASSWORD"
+free_kindle_email: "YOUR_USER_NAME@free.kindle.com"
+user_email: "YOUR_GMAIL_USER_NAME@gmail.com"
