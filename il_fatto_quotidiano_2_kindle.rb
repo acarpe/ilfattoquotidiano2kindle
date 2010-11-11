@@ -6,7 +6,7 @@ require 'il_fatto_quotidiano_mailer'
 
 class IlFattoQuotidiano2Kindle
   def self.send
-    config = YAML::load_file(File.join(Dir.pwd,'config.yml')
+    config = YAML::load_file(File.join(Dir.pwd,"config.yml" ) )
     setting_up_smtp(config)
     begin
       agent = Mechanize.new { |agent|
