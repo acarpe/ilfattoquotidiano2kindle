@@ -2,7 +2,7 @@ require 'rubygems'
 require 'net/http'
 require 'mechanize'
 require 'yaml'
-require 'il_fatto_quotidiano_mailer'
+require File.join(Dir.pwd,'il_fatto_quotidiano_mailer.rb')
 
 class IlFattoQuotidiano2Kindle
   def self.send
@@ -26,7 +26,7 @@ class IlFattoQuotidiano2Kindle
       puts "getting pdf and saving in /tmp..."
       agent.get("#{config['site_hostname']}/openpdf/?n=#{date}").save_as(file_name)
       puts "done."
-      puts "sending pdf to #{free_kindle_email}..."
+      puts "sending pdf to #{config['free_kindle_email']}..."
       IlFattoQuotidianoMailer.file(config['free_kindle_email'],config['user_email'], file_name, "application/pdf").deliver
       puts "done."
     rescue Exception => e
