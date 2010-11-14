@@ -13,25 +13,25 @@ class IlFattoQuotidiano2Kindle
         agent.user_agent_alias = 'Mac Safari'
       }
 
-      puts "logging in on ilfatto..."
+      puts "#{Time.now.to_s} - logging in on ilfatto..."
       agent.get(config['site_login_url']) do |page|
         login = page.form_with(:name => 'loginform')
         login.log = config['site_user_name']
         login.pwd = config['site_password']
         login.submit
       end
-      puts "login done"
+      puts "#{Time.now.to_s} - login done"
       date=Time.now.strftime("%Y%m%d")
       file_name = "/tmp/ilfatto#{date}.pdf"
-      puts "getting pdf and saving in /tmp..."
+      puts "#{Time.now.to_s} - getting pdf and saving in /tmp..."
       agent.get("#{config['site_hostname']}/openpdf/?n=#{date}").save_as(file_name)
-      puts "done."
-      puts "sending pdf to #{config['free_kindle_email']}..."
+      puts "#{Time.now.to_s} - done."
+      puts "#{Time.now.to_s} - sending pdf to #{config['free_kindle_email']}..."
       IlFattoQuotidianoMailer.file(config['free_kindle_email'],config['user_email'], file_name, "application/pdf").deliver
-      puts "done."
+      puts "#{Time.now.to_s} - done."
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.inspect
+      puts "#{Time.now.to_s} - #{e.message}"
+      puts "#{Time.now.to_s} - #{e.backtrace.inspect}"
     end
   end
 
