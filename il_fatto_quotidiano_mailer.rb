@@ -8,6 +8,6 @@ class IlFattoQuotidianoMailer < ActionMailer::Base
       subj = subj.gsub(/\.\w*/,'') if strip_ext
       #set up the attachment
       attachments[file_name.gsub(/.*\//,'')] = File.read(file_name)
-      mail(:to => to, :from => sender, :subject => subj, :body => '', :date => Time.now)
+      mail(:to => to, :from => sender, :subject => subj, :body => subj, :date => Time.now)
   end
 end

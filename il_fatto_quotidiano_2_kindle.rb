@@ -36,7 +36,7 @@ class IlFattoQuotidiano2Kindle
   end
 
   def self.setting_up_smtp config
-    ActionMailer::Base.delivery_method = :smtp
+    # ActionMailer::Base.delivery_method = :smtp
     ActionMailer::Base.smtp_settings = {
         :enable_starttls_auto => true,
         :address => "smtp.gmail.com",
