@@ -2,6 +2,8 @@ require 'rubygems'
 require 'net/http'
 require 'mechanize'
 require 'yaml'
+require 'mail'
+require 'aws/ses'
 
 class IlFattoQuotidiano2Kindle
   def self.send
@@ -24,25 +26,14 @@ class IlFattoQuotidiano2Kindle
       log("getting pdf and saving in /tmp...")
       agent.get("#{config['site_hostname']}/openpdf/?n=#{date}").save_as(file_name)
       log("done.")
-      log("logging into Gmail to send the email")
-      page = agent.get("http://www.gmail.com")
-      login_form = page.forms.first
-      login_form.Email = config['smtp_user_name']
-      login_form.Passwd = config['smtp_password']
-      home = agent.submit(login_form, login_form.buttons.first)
-      log("logged into Gmail")
-      log("loading HTML Gmail interface")
-      page = agent.get(home.search("//meta").first.attributes['content'].to_s.gsub(/0; url=/,'').gsub(/'/,''))
-      page = agent.get(page.uri.to_s.sub(/\?.*$/, "?ui=html&zy=n"))
-      log("HTML Gmail interface loaded")
-      log("composing email...")
-      page = agent.click(page.links.find { |l| l.text =~ /compose/i })
-      form = page.forms[1]
-      form.to = config['free_kindle_email']
-      form.subject = "ilfatto#{date}"
-      form.file_uploads.first.file_name = file_name
-      form.body = "ilfatto#{date}"
-      page = agent.submit(form, form.buttons.first)
+      mail = Mail.new
+      mail.to = config['free_kindle_email']
+      mail.from = config['user_email']
+      mail.subject = "ilfatto#{date}"
+      mail.attachments["ilfatto#{date}.pdf"] = File.read(file_name)
+      mail.body = "ilfatto#{date}"
+      send_with_gmail(mail)
+      # send_with_ses(mail)
       log("email sent")
       log("done.")
     rescue Exception => e
@@ -51,6 +42,24 @@ class IlFattoQuotidiano2Kindle
     end
   end
 
+  def self.send_with_gmail(mail)
+    mail.delivery_method :smtp, { :address              => "smtp.gmail.com",
+                                 :port                 => 587,
+                                 :domain               => 'gmail.com',
+                                 :user_name            => 'a.carpe',
+                                 :password             => '',
+                                 :authentication       => 'plain',
+                                 :enable_starttls_auto => true }
+    mail.deliver!
+  end
+
+  def self.send_with_ses(mail)
+    ses = AWS::SES::Base.new(
+            :access_key_id     => '',
+            :secret_access_key => ''
+            )
+    ses.send_raw_email(mail)
+  end
   def self.log(message)
      puts "#{Time.now.to_s} - #{message}"
   end
